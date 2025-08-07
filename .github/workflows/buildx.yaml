@@ -7,15 +7,15 @@ name: Docker Buildx - Standard
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "fleet-argocd-plugin/**"
+    # paths:
+    #   - "fleet-argocd-plugin/**"
     branches:
       - main
   pull_request:
     branches:
       - main
-    paths:
-      - "fleet-argocd-plugin/**"
+    # paths:
+    #   - "fleet-argocd-plugin/**"
 
 env:
   REGISTRY: ${{ vars.REGISTRY || format('ghcr.io/{0}', github.repository_owner) }}
