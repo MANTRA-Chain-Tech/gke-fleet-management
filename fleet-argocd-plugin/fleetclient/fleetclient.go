@@ -46,7 +46,7 @@ metadata:
     argocd.argoproj.io/secret-type: cluster
     region: {{.Region}}
     clusterName: {{.ClusterName}}
-	clusterType: {{.ClusterType}}
+    clusterType: {{.ClusterType}}
   annotations:
     fleet.gke.io/managed-by-fleet-plugin: "true"
 type: Opaque
