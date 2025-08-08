@@ -46,6 +46,7 @@ metadata:
     argocd.argoproj.io/secret-type: cluster
     region: {{.Region}}
     clusterName: {{.ClusterName}}
+	clusterType: {{.ClusterType}}
   annotations:
     fleet.gke.io/managed-by-fleet-plugin: "true"
 type: Opaque
@@ -240,17 +241,31 @@ func (c *FleetSync) reconcileClusterSecrets(ctx context.Context) error {
 		parts := strings.Split(membership, "/")
         region := parts[3]
         membershipID := parts[5]
+		clusterType := "unknown"
+        switch {
+        case strings.HasSuffix(membershipID, "-auto"):
+            clusterType = "auto"
+        case strings.HasSuffix(membershipID, "-std"):
+            clusterType = "std"
+        default:
+            seg := strings.Split(membershipID, "-")
+            if len(seg) > 0 {
+                clusterType = seg[len(seg)-1]
+            }
+        }		
 		secretName := fmt.Sprintf(clusterSecretNameTemplate, parts[5], parts[3], c.ProjectNum)
 		param := struct {
 			Name              string
 			ConnectGatewayURL string
             Region            string
             ClusterName       string
+			ClusterType       string
 		}{
 			Name:              secretName,
 			ConnectGatewayURL: connectGatewayURL(c.ProjectNum, parts[3], parts[5]),
             Region:            region,
             ClusterName:       membershipID,
+			ClusterType:       clusterType,
 		}
 		tmpl, err := template.New("secret").Parse(clusterSecretTemplate)
 		if err != nil {
