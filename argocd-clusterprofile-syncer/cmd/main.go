@@ -45,7 +45,7 @@ const (
 	crdName                 = "clusterprofiles.multicluster.x-k8s.io"
 	secretConfig            = `{
 	"execProviderConfig": {
-		"command": "argocd-k8s-auth",
+		"command": "gke-gcloud-auth-plugin",
 		"args": ["gcp"],
 		"apiVersion": "client.authentication.k8s.io/v1beta1"
 	},

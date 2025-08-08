@@ -8,13 +8,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: argocd-fleet-sync
-  namespace: argocd
-  annotations:
-    iam.gke.io/gcp-service-account: $FLEET_SA
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -48,7 +41,7 @@ metadata:
 data:
   token: '$argocd-fleet-sync:token'
   baseUrl: "http://argocd-fleet-sync.argocd.svc.cluster.local:8888"
-  FLEET_PROJECT_NUMBER: "$FLEET_PROJECT_NUMBER"
+  FLEET_PROJECT_NUMBER: "487982743010"
   PORT: ":4356"
 ---
 apiVersion: apps/v1
@@ -67,12 +60,15 @@ spec:
         app.kubernetes.io/name: argocd-fleet-sync
     spec:
       serviceAccountName: argocd-fleet-sync
+      automountServiceAccountToken: true
+      imagePullSecrets:
+        - name: ghcr-mantrachaind-registry-read-secret
       nodeSelector:
         iam.gke.io/gke-metadata-server-enabled: "true"
       containers:
       - name: argocd-fleet-sync
         # eg. us-central1-docker.pkg.dev/my-test-proj/argocd-fleet-sync/plugin:v1.0
-        image: "$PATH_TO_IMAGE"
+        image: "ghcr.io/mantra-chain-tech/gke-fleet-management:6c47b2b"
         imagePullPolicy: Always
         envFrom:
         - configMapRef:

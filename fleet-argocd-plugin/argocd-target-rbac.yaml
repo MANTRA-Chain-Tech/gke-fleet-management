@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd-manager
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argocd-manager-sa
+  # Use the new namespace
+  namespace: argocd-manager
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-manager-role
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-manager-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-manager-role
+subjects:
+- kind: ServiceAccount
+  name: argocd-manager-sa
+  # Point to the Service Account in the new namespace
+  namespace: argocd-manager
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argocd-manager-sa-token
+  namespace: argocd-manager
+  annotations:
+    # This annotation is the crucial part
+    kubernetes.io/service-account.name: argocd-manager-sa
+type: kubernetes.io/service-account-token
