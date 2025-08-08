@@ -53,7 +53,7 @@ stringData:
   config: |
     {
       "execProviderConfig": {
-        "command": "gke-gcloud-auth-plugin",
+        "command": "argocd-k8s-auth",
         "args": ["gcp"],
         "apiVersion": "client.authentication.k8s.io/v1beta1"
       },
